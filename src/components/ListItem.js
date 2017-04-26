@@ -1,15 +1,23 @@
 import React, { Component } from 'react';
-import { Text, TouchableWithoutFeedback, View } from 'react-native';
+import { 
+    Text, 
+    TouchableWithoutFeedback, 
+    View,
+    LayoutAnimation
+} from 'react-native';
 import { connect } from 'react-redux';
 import { CardSection } from './common';
 import * as actions from '../actions';
 
 class ListItem extends Component {
+    componentWillUpdate() {
+        LayoutAnimation.spring();
+    }
 
     renderDescription() {
-        const { library, selectedLibraryID } = this.props;
+        const { library, expanded } = this.props;
         // console.log(`library: ${library.id}, selectedLibraryID: ${selectedLibraryID}`);
-        if (library.id === selectedLibraryID) {
+        if (expanded) {
             return (
                 <Text>{library.description}</Text>
             );
@@ -39,12 +47,15 @@ class ListItem extends Component {
 const styles = {
     titleStyle: {
         fontSize: 18,
-        paddingLeft: 15
+        paddingLeft: 15,
+        flex: 1
     }
 };
 
-const MapStateToProps = state => {
-    return { selectedLibraryID: state.selectedLibraryID };
+const MapStateToProps = (state, ownProps) => {
+    const expanded = state.selectedLibraryID === ownProps.library.id;
+
+    return { expanded };
 };
 export default connect(MapStateToProps, actions)(ListItem);
 
